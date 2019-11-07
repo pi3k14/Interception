@@ -30,7 +30,7 @@ namespace Kodefabrikken.Interception
             {
                 // TODO : Keep a collection of intercepted objects, so we can find the proxy even if the
                 //        user send the proxied object on each call?
-                proxysInterceptor = new ChainedInterceptors<TIntercepted>(new ImplementationDispatcher<TIntercepted>(obj));
+                proxysInterceptor = new ChainedInterceptors<TIntercepted>(obj);
                 obj = InterfaceProxy<TIntercepted>.Create(proxysInterceptor);
             }
             else

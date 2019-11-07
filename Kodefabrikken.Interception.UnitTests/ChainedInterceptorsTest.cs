@@ -12,7 +12,7 @@ namespace Kodefabrikken.Interception.UnitTests
     {
         public interface IIntercepted
         {
-            void Method();
+            int Method();
         }
 
         public class FirstInterceptor : ChainedInterceptor<IIntercepted>
@@ -31,16 +31,16 @@ namespace Kodefabrikken.Interception.UnitTests
         public class Intercept
         {
             [TestMethod]
-            public void Next_interceptor_in_chain_is_called_on_intercept()
+            public void Method_implementation_is_called_on_intercept()
             {
-                var interceptor = A.Fake<IInterceptor<IIntercepted>>();
-                var sut = new ChainedInterceptors<IIntercepted>(interceptor);
-                var arg1 = A.Dummy<MethodInfo>();
+                var intercepted = A.Fake<IIntercepted>();
+                var sut = new ChainedInterceptors<IIntercepted>(intercepted);
+                var arg1 = typeof(IIntercepted).GetMethod("Method");
                 var arg2 = A.Dummy<object[]>();
 
                 sut.Intercept(arg1, arg2);
 
-                A.CallTo(() => interceptor.Intercept(arg1, arg2)).MustHaveHappenedOnceExactly();
+                A.CallTo(() => intercepted.Method()).MustHaveHappenedOnceExactly();
             }
         }
 
@@ -50,14 +50,14 @@ namespace Kodefabrikken.Interception.UnitTests
             [TestMethod]
             public void Interceptors_called_in_order()
             {
-                var interceptor = A.Fake<IInterceptor<IIntercepted>>();
-                var arg1 = A.Dummy<MethodInfo>();
-                var arg2 = A.Dummy<object[]>();
-                A.CallTo(() => interceptor.Intercept(arg1, arg2)).Returns(1);
-                var sut = new ChainedInterceptors<IIntercepted>(interceptor);
+                var intercepted = A.Fake<IIntercepted>();
+                A.CallTo(() => intercepted.Method()).Returns(1);
+                var sut = new ChainedInterceptors<IIntercepted>(intercepted);
                 sut.Add<FirstInterceptor>();
+                var arg1 = typeof(IIntercepted).GetMethod("Method");
+                var arg2 = A.Dummy<object[]>();
 
-                // outer intercepter add one to inner, result should be two (one on fault)
+                // intercepter add one to method result, result should be two (one on fault)
                 var result = sut.Intercept(arg1, arg2);
 
                 Assert.AreEqual(2, result);

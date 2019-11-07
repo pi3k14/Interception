@@ -22,9 +22,9 @@ namespace Kodefabrikken.Interception
     {
         IInterceptor<TIntercepted> FirstInterceptor { get; set; }
 
-        internal ChainedInterceptors(IInterceptor<TIntercepted> interceptor)
+        internal ChainedInterceptors(TIntercepted intercepted)
         {
-            FirstInterceptor = interceptor;
+            FirstInterceptor = new ImplementationDispatcher<TIntercepted>(intercepted);
         }
 
         internal IInterceptor<TIntercepted> Add<TInterceptor>()
