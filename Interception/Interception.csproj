@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Authors>Frode</Authors>
+    <PackageId>Kodefabrikken.Interception</PackageId>
+    <AssemblyName>Kodefabrikken.Interception</AssemblyName>
+    <RootNamespace>Kodefabrikken</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' Or '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="system.reflection.dispatchproxy" Version="4.5.1" />
+  </ItemGroup>
+
+</Project>

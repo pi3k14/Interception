@@ -39,8 +39,17 @@ namespace Kodefabrikken.Decorator
         {
             foreach (var parameterInfo in targetMethod.GetParameters())
             {
-                if (!parameterInfo.ParameterType.IsValueType && // not value type
-                    !(parameterInfo.ParameterType.IsGenericType && parameterInfo.ParameterType.GetGenericTypeDefinition() == typeof(Nullable<>)) && // not Nullable<T>
+                if (!parameterInfo.ParameterType.
+#if NETSTANDARD1_3
+                                                GetTypeInfo().
+#endif
+                                                    IsValueType && // not value type
+                    !(parameterInfo.ParameterType.
+#if NETSTANDARD1_3
+                                                GetTypeInfo().
+#endif
+                                                     IsGenericType &&
+                        parameterInfo.ParameterType.GetGenericTypeDefinition() == typeof(Nullable<>)) && // not Nullable<T>
                     !parameterInfo.CustomAttributes.Any(p => p.AttributeType == typeof(NullableAttribute))) // no Nullable attribute
                 {
                     if (args[parameterInfo.Position] == null)
