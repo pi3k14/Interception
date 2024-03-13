@@ -5,4 +5,4 @@ using System.Reflection;
 // associated with the assemblies in this solution.
 [assembly: AssemblyCompany("Kodefabrikken")]
 [assembly: AssemblyProduct("Kodefabrikken public libraries")]
-[assembly: AssemblyCopyright("Copyright © 2018-2019 Kodefabrikken")]
+[assembly: AssemblyCopyright("Copyright © 2018-2024 Kodefabrikken")]
