@@ -1,0 +1,11 @@
+branches:
+    release:
+        regex: releases?[/-]
+        tag: rc
+    hotfix:
+        regex: hotfix(es)?[/-]
+        tag: rc
+    develop:
+        regex: dev(elop)?(ment)?$
+        tag: beta
+  
