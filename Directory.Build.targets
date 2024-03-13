@@ -1,33 +1,31 @@
 <Project>
-  <!-- This file will be included in all MsBuilds of projects below this folder, and calculates Version, PackageVersion and FileVersion attributes -->
+  <!-- This file will be included in all MsBuilds of projects below this folder, the file calculates Version, PackageVersion and FileVersion properties.
+       Version property corresponds to Package version in project UI, PackageVersion is normally set from Version property and FileVersion corresponds
+       to Assembly file version in project UI.
+       We recommend to set Assembly version (AssemblyVersion property) and Assembly file version (FileVersion proptery) explicit in all projects intended for deployment.
+  -->
 
   <ItemGroup>
     <!-- Version number generation is dependent on GitVersion -->
-    <PackageReference Include="GitVersionTask" Version="3.6.5">
+    <PackageReference Include="GitVersionTask" Version="5.1.3">
       <PrivateAssets>All</PrivateAssets>
-      <NoWarn>NU1701</NoWarn>
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup>
-    <!-- Instruct GitVersionTask to not change anything, just give us the version properties -->
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
-    <UpdateVersionProperties>false</UpdateVersionProperties>
-    <GetVersion>true</GetVersion>
-    <GenerateNuspecDependsOn>SetProductVersion</GenerateNuspecDependsOn>
-    <GetPackageVersionDependsOn>SetProductVersion</GetPackageVersionDependsOn>
-  </PropertyGroup>
-
   <!-- Let GitVersion calculate the product version before .NET Sdk creates assembly version info -->
-  <Target Name="SetProductVersion" DependsOnTargets="GetVersion" BeforeTargets="GetAssemblyVersion" Condition="Exists('$(NuGetPackageRoot)gitversiontask\3.6.5\build\dotnet\GitVersionTask.targets')">
+  <Target Name="SetProductVersion" DependsOnTargets="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack"
+          Condition="Exists('$(NuGetPackageRoot)gitversiontask\5.1.3\build\GitVersionTask.targets')"> <!-- Don't use when creating <project>.nuget.g.props/targets, ie. before GitVersionTask is imported -->
 
-    <Message Text="GitVersion calculated version $(GitVersion_NuGetVersion)" />
+    <Message Text="GitVersion calculated version $(GitVersion_NuGetVersion), used for Package version.
+      Also used for AssemblyVersion, FileVersion and InformationalVersion unless they are set in project file." />
+    <!-- This last line is performed by Task GetAssemblyVersion in Microsoft.NET.GenerateAssemblyInfo.targets -->
 
     <PropertyGroup>
       <Version>$(GitVersion_NuGetVersion)</Version> <!-- Override any settings from project file -->
 
       <PackageVersion>$(GitVersion_NuGetVersion)</PackageVersion> <!-- Set version number for NuGetPackage (if built) -->
-      <!-- This could have been deduced from Version if we knew how to calculate this before NuGet.Build.Tasks.Pack.targets is imported -->
+      <!-- This could have been set automagically from Version if we knew how to calculate Version before NuGet.Build.Tasks.Pack.targets is imported.
+           PackageVersion is set in NuGet.Build.Tasks.Pack.targets by Import from Sdk.targets -->
 
     </PropertyGroup>
   </Target>

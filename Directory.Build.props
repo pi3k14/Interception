@@ -1,13 +1,22 @@
 <Project>
   <!-- This file will be included in all MSBuilds of projects below this folder, and includes common assembly attributes -->
- 
+
   <PropertyGroup>
     <!-- Don't autogenerate these, as we have a common definition in SolutionInfo.cs -->
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+
+    <!-- Instruct GitVersionTask to not change anything, just give us the version properties -->
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+    <GenerateGitVersionInformation>false</GenerateGitVersionInformation>
+    <UpdateVersionProperties>false</UpdateVersionProperties>  <!-- There is some strange settings here that we override with Task SetProductVersion -->
+
+    <!-- Some magic from GitVersionTask, assume we need this to get the build order correct -->
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);SetProductVersion</MarkupCompilePass1DependsOn>
+    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);SetProductVersion</GetPackageVersionDependsOn>
   </PropertyGroup>
- 
+
   <ItemGroup>
     <!-- Automagical include this file in all project files -->
     <Compile Include="..\SolutionInfo.cs" />
